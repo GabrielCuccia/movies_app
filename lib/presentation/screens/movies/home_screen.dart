@@ -1,8 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:movies_app/presentation/providers/movies/movies_providers.dart';
+import 'package:movies_app/presentation/providers/movies/movies_slideshow_provider.dart';
+import 'package:movies_app/presentation/widgets/movies/movie_horizontal_listview.dart';
 import 'package:movies_app/presentation/widgets/movies/movies_slideshow.dart';
 import 'package:movies_app/presentation/widgets/shared/custom_app.dart';
+import 'package:movies_app/presentation/widgets/shared/custom_bottom_navigation.dart';
 
 
 class HomeScreen extends StatelessWidget {
@@ -12,7 +15,8 @@ class HomeScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
+    return const Scaffold(
+      bottomNavigationBar: CustomBottomNavigationBar(),
       body: Center(
         child: HomeView(),
       ),
@@ -39,34 +43,30 @@ class _HomeViewState extends ConsumerState<HomeView> {
   }
   @override
   Widget build(BuildContext context) {
+    final moviesSlidesShow = ref.watch(MoviesSlidesShowProvider);
     final nowPlayingMovies = ref.watch(nowPlayingMoviesProvider);
-    if (nowPlayingMovies.length == 0) return CircularProgressIndicator();
+    if (nowPlayingMovies.length == 0) return const CircularProgressIndicator();
     return Column(
 
       
 
       children: [
-        CustomAppBar(
+        const CustomAppBar(
 
         ),
 
-        MoviesSlidesShow(movies: nowPlayingMovies),
+        MoviesSlidesShow(movies: moviesSlidesShow),
 
-
-
-
-        Expanded(
-          child: ListView.builder(
-            itemCount: nowPlayingMovies.length,
-            itemBuilder: (context, index) {
-              final movie = nowPlayingMovies[index];
-              return ListTile(
-                title: Text(movie.title),
-                
-                
-              );
-          },),
-        ),
+        MovieHorizontalListview(
+          movies: nowPlayingMovies,
+           title: "En cines",
+            subTitle: "Lunes 12",
+            loadNextPage: () {
+              ref.read(nowPlayingMoviesProvider.notifier).loadNextPage();
+              
+            }
+            )
+        
       ],
     );
   }
