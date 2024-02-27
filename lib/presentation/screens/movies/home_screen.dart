@@ -40,34 +40,80 @@ class _HomeViewState extends ConsumerState<HomeView> {
     // TODO: implement initState
     super.initState();
     ref.read(nowPlayingMoviesProvider.notifier).loadNextPage();
+    ref.read(popularMoviesProvider.notifier).loadNextPage();
   }
   @override
   Widget build(BuildContext context) {
     final moviesSlidesShow = ref.watch(MoviesSlidesShowProvider);
     final nowPlayingMovies = ref.watch(nowPlayingMoviesProvider);
+    final popularMovies = ref.watch(popularMoviesProvider);
     if (nowPlayingMovies.length == 0) return const CircularProgressIndicator();
-    return Column(
+    return CustomScrollView(
 
-      
-
-      children: [
-        const CustomAppBar(
+      slivers: [
+        const SliverAppBar(
+          floating: true,
+          flexibleSpace: FlexibleSpaceBar(
+            titlePadding: EdgeInsets.all(0),
+            title: CustomAppBar(),
+          ),
 
         ),
+        SliverList(delegate: SliverChildBuilderDelegate((context, index) {
+          return  Column(
+          
+          
+          
+          children: [
+            
+          
+            MoviesSlidesShow(movies: moviesSlidesShow),
+          
+            MovieHorizontalListview(
+              movies: nowPlayingMovies,
+               title: "En cines",
+                subTitle: "Lunes 12",
+                loadNextPage: () {
+                  ref.read(nowPlayingMoviesProvider.notifier).loadNextPage();
+                  
+                }
+                ),
+                MovieHorizontalListview(
+                movies: nowPlayingMovies,
+                title: "Proximamente",
+                subTitle: "En este mes",
+                loadNextPage: () {
+                  ref.read(nowPlayingMoviesProvider.notifier).loadNextPage();
+                 
+                  
+                }
+                ),
+                MovieHorizontalListview(
+                movies: popularMovies,
+                title: "Populares",
+                
+                loadNextPage: () {
+                  ref.read(popularMoviesProvider.notifier).loadNextPage();
+                  
+                }
+                ),
+                MovieHorizontalListview(
+                movies: nowPlayingMovies,
+                title: "Mejor calificadas",
+                
+                loadNextPage: () {
+                  ref.read(nowPlayingMoviesProvider.notifier).loadNextPage();
+                  
+                }
+                ),
+                SizedBox(height: 50,)
+            
+          ],
+        );
 
-        MoviesSlidesShow(movies: moviesSlidesShow),
-
-        MovieHorizontalListview(
-          movies: nowPlayingMovies,
-           title: "En cines",
-            subTitle: "Lunes 12",
-            loadNextPage: () {
-              ref.read(nowPlayingMoviesProvider.notifier).loadNextPage();
-              
-            }
-            )
-        
+        }, childCount: 1))
       ],
-    );
+         
+      );
   }
 }

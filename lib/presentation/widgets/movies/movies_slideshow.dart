@@ -23,7 +23,7 @@ class MoviesSlidesShow extends StatelessWidget {
       )),
       viewportFraction: 0.8,
       scale: 0.9,
-      autoplay: true,  
+      autoplay: true,
       itemCount: movies.length,
       itemBuilder: (context, index) {
         final movie = movies[index];
