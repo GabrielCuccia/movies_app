@@ -1,11 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:movies_app/presentation/providers/movies/initial_loading_provider.dart';
 import 'package:movies_app/presentation/providers/movies/movies_providers.dart';
 import 'package:movies_app/presentation/providers/movies/movies_slideshow_provider.dart';
 import 'package:movies_app/presentation/widgets/movies/movie_horizontal_listview.dart';
 import 'package:movies_app/presentation/widgets/movies/movies_slideshow.dart';
 import 'package:movies_app/presentation/widgets/shared/custom_app.dart';
 import 'package:movies_app/presentation/widgets/shared/custom_bottom_navigation.dart';
+import 'package:movies_app/presentation/widgets/shared/full_screen_loader.dart';
 
 
 class HomeScreen extends StatelessWidget {
@@ -41,14 +43,22 @@ class _HomeViewState extends ConsumerState<HomeView> {
     super.initState();
     ref.read(nowPlayingMoviesProvider.notifier).loadNextPage();
     ref.read(popularMoviesProvider.notifier).loadNextPage();
+    ref.read(upComingProvider.notifier).loadNextPage();
+    ref.read(topRatedProvider.notifier).loadNextPage();
   }
   @override
   Widget build(BuildContext context) {
+    final isInitialLoadingReady = ref.watch(initialLoadingProvider);
     final moviesSlidesShow = ref.watch(MoviesSlidesShowProvider);
     final nowPlayingMovies = ref.watch(nowPlayingMoviesProvider);
     final popularMovies = ref.watch(popularMoviesProvider);
+    final upComingMovies = ref.watch(upComingProvider);
+    final topRatedMovies = ref.watch(topRatedProvider);
     if (nowPlayingMovies.length == 0) return const CircularProgressIndicator();
-    return CustomScrollView(
+    return isInitialLoadingReady ? FullScreenLoader() : 
+    
+
+     CustomScrollView(
 
       slivers: [
         const SliverAppBar(
@@ -79,11 +89,11 @@ class _HomeViewState extends ConsumerState<HomeView> {
                 }
                 ),
                 MovieHorizontalListview(
-                movies: nowPlayingMovies,
+                movies: upComingMovies,
                 title: "Proximamente",
                 subTitle: "En este mes",
                 loadNextPage: () {
-                  ref.read(nowPlayingMoviesProvider.notifier).loadNextPage();
+                  ref.read(upComingProvider.notifier).loadNextPage();
                  
                   
                 }
@@ -98,11 +108,11 @@ class _HomeViewState extends ConsumerState<HomeView> {
                 }
                 ),
                 MovieHorizontalListview(
-                movies: nowPlayingMovies,
+                movies: topRatedMovies,
                 title: "Mejor calificadas",
                 
                 loadNextPage: () {
-                  ref.read(nowPlayingMoviesProvider.notifier).loadNextPage();
+                  ref.read(topRatedProvider.notifier).loadNextPage();
                   
                 }
                 ),
