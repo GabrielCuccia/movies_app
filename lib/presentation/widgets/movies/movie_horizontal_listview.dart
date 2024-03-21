@@ -29,7 +29,7 @@ class _MovieHorizontalListviewState extends State<MovieHorizontalListview> {
     scrollController.addListener(() {
     if (widget.loadNextPage == null) return;
     if((scrollController.position.pixels + 200) >= scrollController.position.maxScrollExtent ){
-      print("Hey");
+      
       widget.loadNextPage!();
     }
     });
@@ -94,6 +94,7 @@ class _Slide extends StatelessWidget {
         children: [
         SizedBox(
           width: 150,
+          height: 215,
           child: ClipRRect(
             borderRadius: BorderRadius.circular(20),
             child: Image.network(movie.posterPath,

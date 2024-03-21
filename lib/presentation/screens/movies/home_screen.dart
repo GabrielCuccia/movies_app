@@ -56,8 +56,6 @@ class _HomeViewState extends ConsumerState<HomeView> {
     final topRatedMovies = ref.watch(topRatedProvider);
     if (nowPlayingMovies.length == 0) return const CircularProgressIndicator();
     return isInitialLoadingReady ? FullScreenLoader() : 
-    
-
      CustomScrollView(
 
       slivers: [
@@ -84,6 +82,7 @@ class _HomeViewState extends ConsumerState<HomeView> {
                title: "En cines",
                 subTitle: "Lunes 12",
                 loadNextPage: () {
+                  
                   ref.read(nowPlayingMoviesProvider.notifier).loadNextPage();
                   
                 }

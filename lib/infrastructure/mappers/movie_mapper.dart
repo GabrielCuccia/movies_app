@@ -14,9 +14,9 @@ class MovieMapper {
       originalTitle: movieDB.originalTitle,
       overview: movieDB.overview,
       popularity: movieDB.popularity,
-      posterPath: movieDB.posterPath != ""
+      posterPath: movieDB.posterPath != " "
           ? "https://image.tmdb.org/t/p/w500/${movieDB.posterPath}"
-          : "no-poster",
+          : "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcT-r_cd2YunvZ5iqRYvb4QJ312hlRGqDNnTRmLVuxRw7CDnH1yQLf6dKrCdJ-9dCrwukHI&usqp=CA",
       releaseDate: movieDB.releaseDate,
       title: movieDB.title,
       video: movieDB.video,
@@ -38,7 +38,7 @@ class MovieMapper {
       popularity: movieDB.popularity,
       posterPath: movieDB.posterPath != ""
           ? "https://image.tmdb.org/t/p/w500/${movieDB.posterPath}"
-          : "no-poster",
+          : "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcT-r_cd2YunvZ5iqRYvb4QJ312hlRGqDNnTRmLVuxRw7CDnH1yQLf6dKrCdJ-9dCrwukHI&usqp=CAU",
       releaseDate: movieDB.releaseDate,
       title: movieDB.title,
       video: movieDB.video,
