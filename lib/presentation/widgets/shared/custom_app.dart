@@ -4,6 +4,7 @@ import 'package:go_router/go_router.dart';
 import 'package:movies_app/domain/entities/movie.dart';
 import 'package:movies_app/presentation/delegates/search_movie_delegate.dart';
 import 'package:movies_app/presentation/providers/movies/movies_repository_provider.dart';
+import 'package:movies_app/presentation/providers/search/search_movie_provider.dart';
 
 class CustomAppBar extends ConsumerWidget {
   const CustomAppBar({super.key});
@@ -34,12 +35,14 @@ class CustomAppBar extends ConsumerWidget {
                   Spacer(),
                   IconButton(
                       onPressed: ()  {
-                        final movieRepository =
-                            ref.read(MovieRepositoryProvider); 
+                        final searchQuery = ref.read(searchQueryProvider);
+                        final searchedMovies = ref.read(searchedMoviesProvider);
                          showSearch<Movie?>(
+                          query: searchQuery,
                             context: context,
                             delegate: SearchMovieDelegate(
-                                searchMovies: movieRepository.searchMovies)).then((movie) {
+                                initialMovies: searchedMovies,
+                                searchMovies: ref.read(searchedMoviesProvider.notifier).searchMoviesByQuery  )).then((movie) {
                                   if(movie == null) return;
                                   context.push("/movie/${movie.id}");
                                 });
