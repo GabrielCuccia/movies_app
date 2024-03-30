@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:movies_app/domain/entities/movie.dart';
 import 'package:movies_app/presentation/providers/actors/actors_by_movie_provider.dart';
 import 'package:movies_app/presentation/providers/movies/movie_info_provider.dart';
+import 'package:movies_app/presentation/providers/storage/local_storage_provider.dart';
 
 class MovieScreen extends ConsumerStatefulWidget {
   const MovieScreen({super.key, required this.movieId});
@@ -129,16 +130,20 @@ class _MovieDetails extends StatelessWidget {
 
 
 
-class _CustomSliverAppBar extends StatelessWidget {
+class _CustomSliverAppBar extends ConsumerWidget {
   const _CustomSliverAppBar({super.key, required this.movie});
   final Movie movie;
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, ref) {
 
     final size = MediaQuery.of(context).size;
 
     return SliverAppBar(
-      
+      actions: [
+        IconButton(onPressed: () {
+          ref.watch(locaLStorageRepositoryProvider).toggleFavorite(movie);
+        }, icon: Icon(Icons.favorite_border))
+      ],
       backgroundColor: Colors.black,
       expandedHeight: size.height * 0.7,
       foregroundColor: Colors.white,
@@ -147,6 +152,10 @@ class _CustomSliverAppBar extends StatelessWidget {
         background: Stack(children: [
           SizedBox.expand(child: Image.network(movie.posterPath, fit: BoxFit.cover,),
           ),
+          const SizedBox.expand(child: DecoratedBox(decoration: BoxDecoration(
+            gradient: LinearGradient(colors: [Colors.black87, Colors.transparent
+            ], begin: Alignment.topRight, end: Alignment.bottomLeft, stops: [0.0, 0.2])
+          )),),
           const SizedBox.expand(child: DecoratedBox(decoration: BoxDecoration(
             gradient: LinearGradient(colors: [Colors.transparent, Colors.black87
             ], begin: Alignment.topCenter, end: Alignment.bottomCenter, stops: [0.5, 1.0])
