@@ -1,8 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:isar/isar.dart';
 import 'package:movies_app/domain/entities/movie.dart';
+import 'package:movies_app/domain/repositories/datasources/local_storage_repository.dart';
+import 'package:movies_app/infrastructure/repositories/local_storage_repository_impl.dart';
 import 'package:movies_app/presentation/providers/actors/actors_by_movie_provider.dart';
 import 'package:movies_app/presentation/providers/movies/movie_info_provider.dart';
+import 'package:movies_app/presentation/providers/storage/favorite_movies_provider.dart';
 import 'package:movies_app/presentation/providers/storage/local_storage_provider.dart';
 
 class MovieScreen extends ConsumerStatefulWidget {
@@ -126,23 +130,34 @@ class _MovieDetails extends StatelessWidget {
 
 
 
+final isFavoriteProvider = FutureProvider.family.autoDispose((ref, int movieId) {
+  final localStorageRepository = ref.watch(locaLStorageRepositoryProvider);
 
+
+  return localStorageRepository.isMovieFavorite(movieId);
+});
 
 
 
 class _CustomSliverAppBar extends ConsumerWidget {
   const _CustomSliverAppBar({super.key, required this.movie});
   final Movie movie;
+  
   @override
   Widget build(BuildContext context, ref) {
-
+    final isFavoriteFuture = ref.watch(isFavoriteProvider(movie.id));
     final size = MediaQuery.of(context).size;
 
     return SliverAppBar(
       actions: [
-        IconButton(onPressed: () {
-          ref.watch(locaLStorageRepositoryProvider).toggleFavorite(movie);
-        }, icon: Icon(Icons.favorite_border))
+        IconButton(onPressed: () async {
+          await ref.read(favoriteMoviesProvider.notifier).toggleFavorite(movie);
+
+          ref.invalidate(isFavoriteProvider(movie.id));
+        },  icon: isFavoriteFuture.when(
+            data: (isFavorite) => isFavorite ? Icon(Icons.favorite_rounded, color: Colors.red,) : Icon(Icons.favorite_border),
+            error: (error, stackTrace) => throw UnimplementedError(),
+            loading: () => Icon(Icons.favorite_border),))
       ],
       backgroundColor: Colors.black,
       expandedHeight: size.height * 0.7,
